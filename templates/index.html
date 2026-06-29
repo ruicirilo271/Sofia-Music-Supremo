@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sofia Music Supremo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="icon" href="{{ url_for('static', filename='default-cover.svg') }}" type="image/svg+xml">
+</head>
+<body>
+  <div class="glow glow-a"></div>
+  <div class="glow glow-b"></div>
+  <main class="app-shell">
+    <section class="hero glass">
+      <div>
+        <p class="eyebrow">Spotify + iTunes + YouTube</p>
+        <h1>Sofia Music <span>Supremo</span></h1>
+        <p class="subtitle">Escolhe género, top português, top global ou pesquisa qualquer música no Spotify. Depois ouves tudo seguido pelo YouTube.</p>
+      </div>
+      <div class="status-card" id="statusCard">
+        <div class="pulse"></div>
+        <div>
+          <strong>A verificar APIs...</strong>
+          <small>Spotify / YouTube / iTunes</small>
+        </div>
+      </div>
+    </section>
+
+    <section class="controls glass">
+      <div class="control-row">
+        <label>
+          Fonte
+          <select id="modeSelect">
+            <option value="spotify_genre">Spotify: top por género</option>
+            <option value="spotify_search">Spotify: pesquisar música/artista</option>
+            <option value="itunes_pt">iTunes/Apple: Top Portugal</option>
+            <option value="itunes_global">iTunes/Apple: Top Global</option>
+            <option value="itunes_genre">iTunes/Apple: Top por género</option>
+          </select>
+        </label>
+
+        <label id="spotifyGenreBox">
+          Género Spotify
+          <input id="genreInput" list="genreList" value="{{ default_genre }}" placeholder="kizomba, semba, afro house...">
+          <datalist id="genreList">
+            {% for genre in spotify_genres %}
+            <option value="{{ genre }}"></option>
+            {% endfor %}
+          </datalist>
+        </label>
+
+        <label id="itunesGenreBox" class="hidden">
+          Género iTunes
+          <select id="itunesGenreSelect">
+            <option value="14">Pop</option>
+          </select>
+        </label>
+
+        <label id="searchBox" class="hidden search-wide">
+          Pesquisa Spotify
+          <input id="searchInput" placeholder="Ex: Matias Damásio, C4 Pedro, Calema, kizomba 2026...">
+        </label>
+
+        <label>
+          País/mercado
+          <select id="marketSelect">
+            <option value="PT">Portugal</option>
+            <option value="AO">Angola</option>
+            <option value="MZ">Moçambique</option>
+            <option value="BR">Brasil</option>
+            <option value="US">Estados Unidos</option>
+            <option value="GB">Reino Unido</option>
+            <option value="ES">Espanha</option>
+            <option value="FR">França</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="chips" id="chips">
+        {% for genre in spotify_genres[:14] %}
+        <button class="chip" data-genre="{{ genre }}">{{ genre }}</button>
+        {% endfor %}
+      </div>
+
+      <div class="button-row">
+        <button id="loadBtn" class="btn primary">⚡ Carregar músicas</button>
+        <button id="playAllBtn" class="btn success">▶ Ouvir todas</button>
+        <button id="prevBtn" class="btn">⏮ Anterior</button>
+        <button id="nextBtn" class="btn">⏭ Próxima</button>
+        <button id="stopBtn" class="btn danger">■ Parar</button>
+      </div>
+    </section>
+
+    <section class="player-grid">
+      <aside class="now glass">
+        <p class="eyebrow">A tocar agora</p>
+        <img id="nowCover" class="now-cover" src="{{ url_for('static', filename='default-cover.svg') }}" alt="Capa da música">
+        <h2 id="nowTitle">Nada a tocar</h2>
+        <p id="nowArtist">Carrega músicas e escolhe uma.</p>
+        <p id="nowSource" class="source-label">Fila vazia</p>
+        <div class="meter" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="mini-actions">
+          <a id="spotifyLink" target="_blank" rel="noreferrer" class="mini-link hidden">Abrir Spotify</a>
+          <a id="itunesLink" target="_blank" rel="noreferrer" class="mini-link hidden">Abrir iTunes</a>
+        </div>
+      </aside>
+
+      <section class="youtube-panel glass">
+        <div id="player"></div>
+        <div class="youtube-placeholder" id="playerPlaceholder">
+          <div class="disc"></div>
+          <strong>YouTube Player Supremo</strong>
+          <span>Quando clicares numa música, o vídeo aparece aqui.</span>
+        </div>
+      </section>
+    </section>
+
+    <section class="playlist glass">
+      <div class="playlist-head">
+        <div>
+          <p class="eyebrow">Fila de reprodução</p>
+          <h2 id="listTitle">Top Kizombas</h2>
+        </div>
+        <div class="counter" id="counter">0 músicas</div>
+      </div>
+      <div id="message" class="message hidden"></div>
+      <div id="trackList" class="track-list"></div>
+    </section>
+  </main>
+
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
